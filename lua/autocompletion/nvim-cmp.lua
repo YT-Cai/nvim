@@ -6,7 +6,7 @@ end
 local cmp = require('cmp')
 local cmp_autopairs = require('nvim-autopairs.completion.cmp')
 local luasnip = require("luasnip")
-local lspkind = require("lspkind")
+-- local lspkind = require("lspkind")
 local kind_icons = {
   Text = "",
   Method = "󰆧",
@@ -35,6 +35,7 @@ local kind_icons = {
   TypeParameter = "󰅲",
   Codeium = "",
 }
+
 cmp.setup({
   enabled = function()
     -- disable completion in comments
@@ -62,26 +63,33 @@ cmp.setup({
     }
   },
   formatting = {
+    -- format = require('lspkind').cmp_format({
+    --   mode = 'symbol',
+    --   maxwidth = 50,
+    --   ellipsis_char = '...',
+    --   symbol_map = { Codeium = "", }
+    -- })
     format = function(entry, vim_item)
+      -- maxwidth = 50,
       -- Kind icons
       vim_item.kind = string.format('%s %s', kind_icons[vim_item.kind], vim_item.kind) -- This concatenates the icons with the name of the item kind
       -- Source
       vim_item.menu = ({
-        codeium = "[codeium]",
-        cmp_r = "[R]",
+        -- buffer = "[Buffer]",
         nvim_lsp = "[LSP]",
         luasnip = "[LuaSnip]",
         nvim_lua = "[Lua]",
-        latex_symbols = "[LaTeX]",
-        otter = "[otter]"
+        cmp_r = "[R]",
+        otter = "[otter]",
+        codeium = "[Codeium]",
       })[entry.source.name]
       return vim_item
     end
   },
-  window = {
-    -- completion = cmp.config.window.bordered(),
-    -- documentation = cmp.config.window.bordered(),
-  },
+  -- window = {
+  --   completion = cmp.config.window.bordered(),
+  --   documentation = cmp.config.window.bordered(),
+  -- },
   mapping = cmp.mapping.preset.insert({
     ["<Tab>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
@@ -102,11 +110,12 @@ cmp.setup({
   }),
   sources = cmp.config.sources(
     {
-      { name = 'codeium' }, -- For luasnip users.
       { name = 'luasnip' }, -- For luasnip users.
       { name = 'nvim_lsp' },
       { name = 'otter' },
-      { name = 'cmp_r' },
+      -- { name = 'buffer' },
+      -- { name = 'cmp_r' },
+      { name = 'codeium' },
       {
         name = 'path',
         option = { trailing_slash = true }
@@ -139,7 +148,7 @@ cmp.setup.cmdline(':', {
   }),
   matching = { disallow_symbol_nonprefix_matching = false }
 })
--- add parentheses after selectig function or method item
+
 cmp.event:on(
   'confirm_done',
   cmp_autopairs.on_confirm_done()

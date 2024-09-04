@@ -15,29 +15,15 @@ require("lazy").setup({
   -- colorscheme
   {
     'rose-pine/neovim',
-    name = 'rose-pine'
+    name = 'rose-pine',
+    opts = {
+      italic = false
+    }
   },
   {
-    'yorickpeterse/vim-paper'
-  },
-  {
-    'projekt0n/github-nvim-theme',
-  },
-  {
-    'cocopon/iceberg.vim'
-  },
-  {
-    'uloco/bluloco.nvim',
+    'yorickpeterse/vim-paper',
     lazy = false,
-    priority = 1000,
-    dependencies = { 'rktjmp/lush.nvim' },
-    config = function()
-      -- your optional config goes here, see below.
-    end,
-  },
-  {
-    'zenbones-theme/zenbones.nvim',
-    dependencies = { 'rktjmp/lush.nvim' },
+    priority = 1000
   },
   {
     "bluz71/vim-moonfly-colors",
@@ -51,7 +37,6 @@ require("lazy").setup({
     lazy = false,
     priority = 1000
   },
-  { "Mofiqul/dracula.nvim" },
   {
     "ellisonleao/gruvbox.nvim",
     priority = 1000,
@@ -59,14 +44,12 @@ require("lazy").setup({
     opts = ...
   },
   {
-    'cryptomilk/nightcity.nvim',
-    version = '*'
+    "kepano/flexoki-neovim",
+    priority = 1000,
   },
   {
-    "eldritch-theme/eldritch.nvim",
-    lazy = false,
-    priority = 1000,
-    opts = {},
+    'cryptomilk/nightcity.nvim',
+    version = '*'
   },
   {
     "neanias/everforest-nvim",
@@ -85,7 +68,7 @@ require("lazy").setup({
         -- transparent = true,
         italic_comments = true,
         hide_fillchars = true,
-        borderless_telescope = false,
+        borderless_telescope = true,
         terminal_colors = true,
       })
     end,
@@ -94,9 +77,7 @@ require("lazy").setup({
     "folke/tokyonight.nvim",
     lazy = false,
     priority = 1000,
-    opts = {
-      style = "storm",
-    },
+    opts = {},
   },
   {
     "olimorris/onedarkpro.nvim",
@@ -110,9 +91,29 @@ require("lazy").setup({
     name = "catppuccin",
     priority = 1000
   },
+  { "maxmx03/dracula.nvim" },
   -- status line
   {
     'nvim-lualine/lualine.nvim',
+    opts = {
+      function(_, opts)
+        local trouble = require("trouble")
+        local symbols = trouble.statusline({
+          mode = "lsp_document_symbols",
+          groups = {},
+          title = false,
+          filter = { range = true },
+          format = "{kind_icon}{symbol.name:Normal}",
+          -- The following line is needed to fix the background color
+          -- Set it to the lualine section you want to use
+          hl_group = "lualine_c_normal",
+        })
+        table.insert(opts.sections.lualine_c, {
+          symbols.get,
+          cond = symbols.has,
+        })
+      end
+    },
     dependencies = { 'nvim-tree/nvim-web-devicons' },
   },
   -- navi-boddy
@@ -142,25 +143,13 @@ require("lazy").setup({
   },
   -- sneak search
   "justinmk/vim-sneak",
-  -- buffer navigation
-  {
-    "leath-dub/snipe.nvim",
-    config = function()
-      local snipe = require("snipe")
-      snipe.setup({
-        ui = {
-          position = "cursor"
-        }
-      })
-      vim.keymap.set("n", "<Leader>sb", snipe.create_buffer_menu_toggler())
-    end
-  },
   -- telescope
   {
     'nvim-telescope/telescope.nvim',
-    tag = '0.1.8',
+    -- tag = '0.1.5',
     dependencies = { 'nvim-lua/plenary.nvim' }
   },
+  -- { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
   -- csv file
   {
     'cameron-wags/rainbow_csv.nvim',
@@ -199,7 +188,7 @@ require("lazy").setup({
               vim.api.nvim_buf_set_keymap(0, "v", "<Enter>", "<Plug>RSendSelection", {})
               vim.api.nvim_buf_set_keymap(0, "n", "<Leader>rr", "<Cmd>RSend shell('CLS')<CR>", {})
               vim.api.nvim_buf_set_keymap(0, "n", "<Leader>hh",
-                "<Cmd>lua require('r.run').action('head', 'n', ', n = 10')<CR>", {})
+                "<Cmd>lua require('r.run').action('head', 'n', ', n = 5')<CR>", {})
             end
           end
         },
@@ -207,17 +196,16 @@ require("lazy").setup({
         objbr_w = 30,
         objbr_place = "script,right",
         rconsole_width = 0,
-        -- rconsole_height = 15,
+        rconsole_height = 20,
         disable_cmds = {
           -- "RDSendLine",
           "RCustomStart",
           "RSPlot",
           "RSaveClose",
         },
-        -- RStudio_cmd = "C:\\Program Files\\RStudio\\rstudio.exe",
-        R_path = "C:\\Program Files\\R\\R-4.3.2\\bin\\x64",
+        -- active_window_warn = false,
+        R_path = "C:\\Users\\STPI\\scoop\\apps\\r43\\4.3.3\\bin\\x64",
         Rout_more_colors = true,
-        -- arrange_windows = false,
         csv_app = "terminal:visidata",
       }
       -- Check if the environment variable "R_AUTO_START" exists.
@@ -243,22 +231,7 @@ require("lazy").setup({
     'jmbuhr/otter.nvim',
   },
   -- repl
-  { 'Vigemus/iron.nvim' },
-  {
-    "pappasam/nvim-repl",
-    init = function()
-      vim.g["repl_filetype_commands"] = {
-        javascript = "node",
-        python = "ipython --no-autoindent",
-        julia = "julia --startup-file=no --history-file=no",
-        -- quarto = "Rterm --quiet --no-save",
-      }
-    end,
-    keys = {
-      { "<leader>rt", "<cmd>ReplToggle<cr>",  desc = "Toggle nvim-repl" },
-      { "<leader>rc", "<cmd>ReplRunCell<cr>", desc = "nvim-repl run cell" },
-      { "<leader>rl", "<plug>ReplSendLine",   desc = "nvim-repl run line" } }
-  },
+  { 'Vigemus/iron.nvim' }, -- iron
   -- surround
   {
     "kylechui/nvim-surround",
@@ -288,9 +261,10 @@ require("lazy").setup({
     config = function()
       local configs = require("nvim-treesitter.configs")
       configs.setup({
-        ensure_installed = { "c", "lua", "vim", "vimdoc",
+        ensure_installed = {
+          "c", "lua", "vim", "vimdoc",
           "javascript", "html", "r", "python", "julia", "markdown", "bash",
-          "rnoweb", "markdown_inline", "html", "json"
+          "rnoweb", "markdown_inline", "html", "json", "typescript"
         },
         sync_install = false,
         highlight = {
@@ -312,7 +286,6 @@ require("lazy").setup({
   -- indent blankline
   { "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {} },
   -- LSP
-  { "neovim/nvim-lspconfig" },
   -- mason
   { "williamboman/mason.nvim",
     "williamboman/mason-lspconfig.nvim" },
@@ -323,8 +296,8 @@ require("lazy").setup({
     "L3MON4D3/LuaSnip",
     -- follow latest release.
     version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
-    -- build = "make install_jsregexp"
     dependencies = { "rafamadriz/friendly-snippets" },
+    -- build = "make install_jsregexp"
   },
   { 'saadparwaiz1/cmp_luasnip' },
   -- nvim-cmp
@@ -334,27 +307,23 @@ require("lazy").setup({
   { 'hrsh7th/cmp-cmdline' },
   { 'hrsh7th/cmp-calc' },
   { 'hrsh7th/cmp-emoji' },
-  -- signature help
   {
     "ray-x/lsp_signature.nvim",
     event = "VeryLazy",
     opts = {
-      doc_lines = 0,
-      max_width = 120,
+      max_width = 100,
       floating_window_off_x = 3,
       handler_opts = {
-        border = "single"
+        border = "rounded"
       },
-      hint_inline = function() return 'inline' end,
+      doc_lines = 0
     },
     config = function(_, opts) require 'lsp_signature'.setup(opts) end
   },
   -- comment
   {
     'numToStr/Comment.nvim',
-    opts = {
-      -- add any options here
-    },
+    opts = {},
     lazy = false,
   },
   -- file explorer
@@ -370,19 +339,6 @@ require("lazy").setup({
   --   event = "VeryLazy",
   --   opts = {
   --     -- add any options here
-  --     presets = {
-  --       bottom_search = false,
-  --       command_palette = false,
-  --       lsp_doc_border = false
-  --     },
-  --     lsp = {
-  --       -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
-  --       override = {
-  --         ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-  --         ["vim.lsp.util.stylize_markdown"] = true,
-  --         ["cmp.entry.get_documentation"] = true, -- requires hrsh7th/nvim-cmp
-  --       },
-  --     },
   --   },
   --   dependencies = {
   --     -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
@@ -392,26 +348,16 @@ require("lazy").setup({
   --     --   If not available, we use `mini` as the fallback
   --     -- "rcarriga/nvim-notify",
   --     'echasnovski/mini.nvim',
-  --     version = '*'
+  --     -- version = '*'
   --   }
-  -- },
-  -- {
-  --   "rcarriga/nvim-notify",
-  --   opts = {
-  --     on_open = function(win)
-  --       local config = vim.api.nvim_win_get_config(win)
-  --       config.border = 'single'
-  --       vim.api.nvim_win_set_config(win, config)
-  --     end
-  --   },
   -- },
   -- undo tree
   {
     "mbbill/undotree",
   },
   -- cursor movement
-  { 'echasnovski/mini.nvim', version = '*' },
   -- { 'echasnovski/mini.indentscope', version = '*' },
+  { 'echasnovski/mini.nvim', version = '*' },
   {
     'gen740/SmoothCursor.nvim',
     config = function()
@@ -428,42 +374,53 @@ require("lazy").setup({
       vim.o.timeout = true
       vim.o.timeoutlen = 300
     end,
-    opts = {
-      -- your configuration comes here
-      -- or leave it empty to use the default settings
-      -- refer to the configuration section below
-    }
+    opts = {}
   },
   -- minimap
   { "wfxr/minimap.vim" },
-  {
-    'MeanderingProgrammer/render-markdown.nvim',
-    opts = {},
-    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' }, -- if you use the mini.nvim suite
-    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
-    dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
-  },
   -- markdown
+  -- headlines
   -- {
   --   "lukas-reineke/headlines.nvim",
   --   dependencies = "nvim-treesitter/nvim-treesitter",
-  --   opts = {},
-  --   -- config = true, -- or `opts = {}`
+  --   config = true, -- or `opts = {}`
   -- },
-  -- { "ellisonleao/glow.nvim", config = true, cmd = "Glow" },
+  {
+    'MeanderingProgrammer/markdown.nvim',
+    name = 'render-markdown', -- Only needed if you have another plugin named markdown.nvim
+    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' }, -- if you use the mini.nvim suite
+    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
+    dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
+    config = function()
+      require('render-markdown').setup({})
+    end,
+  },
+  -- {
+  --   "ellisonleao/glow.nvim",
+  --   config = true,
+  --   cmd = "Glow"
+  -- },
   -- {
   --   "iamcco/markdown-preview.nvim",
   --   cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
-  --   build = "cd app && yarn install",
-  --   init = function()
-  --     vim.g.mkdp_filetypes = { "markdown", "quarto" }
-  --   end,
-  --   ft = { "markdown", "quarto" },
+  --   build = function() vim.fn["mkdp#util#install"]() end,
+  --   ft = { "markdown" },
   -- },
-  -- Hex code color preview
-  { 'norcalli/nvim-colorizer.lua' },
-  -- python related
-  -- { "girishji/pythondoc.vim" },
+  -- docs
+  {
+    "roobert/hoversplit.nvim",
+    config = function()
+      require("hoversplit").setup({
+        key_bindings = {
+          split_remain_focused = "<leader>hs",
+          vsplit_remain_focused = "<leader>hv",
+          split = "<leader>hS",
+          vsplit = "<leader>hV",
+        },
+      })
+    end,
+  },
+  -- debuggin
   {
     "folke/trouble.nvim",
     opts = {}, -- for default options, refer to the configuration section for custom setup.
@@ -501,7 +458,17 @@ require("lazy").setup({
       },
     },
   },
-  -- live-server
+  -- colorizer
+  { 'norcalli/nvim-colorizer.lua' },
+  -- python related
+  -- jupyter notebook for python
+  {
+    "kiyoon/jupynium.nvim",
+    build = "pip3 install --user .",
+  },
+  -- { "rcarriga/nvim-notify" }, -- optional
+  { "stevearc/dressing.nvim" }, -- optional, UI for :JupyniumKernelSelect
+  -- live-server for web dev
   {
     'barrett-ruth/live-server.nvim',
     build = 'npm install -g live-server',
@@ -523,27 +490,41 @@ require("lazy").setup({
     },
     config = function()
       require("codeium").setup({
-        enable_chat = true,
-        language_server = "C:/Users/ytcai/AppData/Local/codeium/",
       })
     end
+  },
+  -- buffer navigation
+  {
+    "leath-dub/snipe.nvim",
+    keys = {
+      {
+        "<Leader>sb",
+        function()
+          require("snipe").open_buffer_menu()
+        end,
+        desc = "Open Snipe buffer menu"
+      }
+    },
+    opts = {
+      ui = {
+        position = "cursor"
+      }
+    }
   },
   -- note taking
   {
     "epwalsh/obsidian.nvim",
-    version = "*",
+    version = "*", -- recommended, use latest release instead of latest commit
     lazy = true,
     ft = "markdown",
-    dependencies = { {
+    dependencies = {
+      -- Required.
       "nvim-lua/plenary.nvim",
-      "hrsh7th/nvim-cmp",
-      "nvim-telescope/telescope.nvim",
-      "nvim-treesitter/nvim-treesitter",
-    } },
+    },
   },
   -- terminal
   {
-   'akinsho/toggleterm.nvim',
+    "akinsho/toggleterm.nvim",
     version = "*",
     config = true
   }

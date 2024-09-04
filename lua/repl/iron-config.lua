@@ -1,21 +1,34 @@
 local iron = require("iron.core")
--- local view = require("iron.view")
+
 iron.setup {
   config = {
     -- Whether a repl should be discarded or not
     scratch_repl = true,
     -- Your repl definitions come here
     repl_definition = {
+      -- shell
       sh = {
-        command = { "sh" }
+        -- Can be a table or a function that
+        -- returns a table (see below)
+        command = { "bash" }
       },
-      python = require("iron.fts.python").ipython,
-      typescript = { command = { "deno" } },
-      javascript = { command = { "deno" } },
+      -- pyton
+      -- python = require("iron.fts.python").ipython,
+      python = {
+        command = { "ipython" }
+      },
+      -- javascript
+      javascript = {
+        command = { "deno" }
+      },
+      -- typescript
+      typescript = {
+        command = { "deno" }
+      }
     },
     -- How the repl window will be displayed
     -- See below for more information
-    repl_open_cmd = require('iron.view').bottom(20),
+    repl_open_cmd = require('iron.view').bottom(15),
   },
   -- Iron doesn't set keymaps by default anymore.
   -- You can set them here or manually add keymaps to the functions in iron.core
@@ -42,6 +55,7 @@ iron.setup {
   },
   ignore_blank_lines = true, -- ignore blank lines when sending visual select lines
 }
+
 -- iron also has a list of commands, see :h iron-commands for all available commands
 vim.keymap.set('n', '<space>rs', '<cmd>IronRepl<cr>')
 vim.keymap.set('n', '<space>rr', '<cmd>IronRestart<cr>')

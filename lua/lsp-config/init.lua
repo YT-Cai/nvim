@@ -2,10 +2,14 @@
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 local opts = { noremap = true, silent = true }
+local nvim_lsp = require('lspconfig')
+
+-- keymaps
 vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
 vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
+
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
@@ -23,15 +27,18 @@ local on_attach = function(client, bufnr)
   -- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
   vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
   vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
+
   vim.keymap.set('n', '<space>wl', function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, bufopts)
+
   vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, bufopts)
   vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, bufopts)
   vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, bufopts)
   vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
   vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = true } end, bufopts)
 end
+
 local lsp_flags = {
   -- This is the default in Nvim 0.7+
   -- debounce_text_changes = 150,
@@ -40,76 +47,34 @@ require('lspconfig')['pylsp'].setup {
   autostart = true,
   on_attach = on_attach,
   cmd = { 'pylsp.cmd' },
-  -- cmd = { 'jedi-language-server.cmd' },
   filetypes = { 'python' },
-  -- flags = lsp_flags,
   capabilities = capabilities
 }
 require('lspconfig')['tsserver'].setup {
   on_attach = on_attach,
-  -- flags = lsp_flags,
-  filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
   cmd = { 'typescript-language-server.cmd', '--stdio' },
+  filetypes = {
+    "javascript", "javascriptreact", "javascript.jsx",
+    "typescript", "typescriptreact", "typescript.tsx" },
   capabilities = capabilities,
-  init_options = { hostInfo = "neovim" },
-  single_file_support = true
+  root_dir = nvim_lsp.util.root_pattern("package.json"),
+  single_file_support = false,
+  init_options = { hostInfo = 'neovim' }
 }
-require('lspconfig')['eslint'].setup {
-  on_attach = function(client, bufnr)
-    vim.api.nvim_create_autocmd({ "BufWritePre" }, {
-      buffer = bufnr,
-      command = "EslintFixAll"
-    })
-  end,
-  -- flags = lsp_flags,
-  filetypes = { "javascript",
-    "javascriptreact", "javascript.jsx",
-    "typescript", "typescriptreact", "typescript.tsx",
-    "vue", "svelte", "astro"
-  },
-  cmd = { 'vscode-eslint-language-server.cmd', '--stdio' },
-  -- handlers = {
-  --   ["eslint/comfirmESlintExecution"] = <function 1>,
-  --   ["eslint/noLibrary"] = <function 2>,
-  --   ["eslint/openDoc"] = <function 3>,
-  --   ["eslint/probeFailed"] = <function 4>,
-  -- },
-  settings = {
-    codeAction = {
-      disableRuleComment = {
-        enable = true,
-        location = "separateLine"
-      },
-      showDocumentation = {
-        enable = true
-      }
-    },
-    codeActionOnSave = {
-      enable = false,
-      mode = "all"
-    },
-    experimental = {
-      useFlatConfig = false
-    },
-    format = true,
-    nodePath = "",
-    onIgnoredFiles = "off",
-    problems = {
-      shortenToSingleLine = false
-    },
-    quiet = false,
-    rulesCustomizations = {},
-    run = "onType",
-    useESLintClass = false,
-    validate = "on",
-    workingDirectory = {
-      mode = "location"
-    }
-  },
-  capabilities = capabilities,
-  init_options = { hostInfo = "neovim" },
-  single_file_support = true
-}
+-- require('lspconfig')['denols'].setup {
+--   on_attach = on_attach,
+--   cmd = { 'deno.cmd', 'lsp' },
+--   filetypes = {
+--     "javascript", "javascriptreact", "javascript.jsx",
+--     "typescript", "typescriptreact", "typescript.tsx" },
+--   capabilities = capabilities,
+--   cmd_env = {
+--     NO_COLOR = true
+--   },
+--   single_file_support = true,
+--   root_dir = nvim_lsp.util.root_pattern { "deno.json", "deno.jsonc", ".git" },
+--   init_options = { hostInfo = 'neovim' }
+-- }
 require('lspconfig')['marksman'].setup {
   on_attach = on_attach,
   -- flags = lsp_flags,
@@ -143,8 +108,8 @@ require('lspconfig')['julials'].setup {
 require('lspconfig')['r_language_server'].setup {
   autostart = true,
   on_attach = on_attach,
-  -- flags = lsp_flags,
-  -- cmd = { 'Rterm', '--slave', '-e', 'languageserver::run()' },
+  flags = lsp_flags,
+  -- cmd = { 'Rterm.exe', '--slave', '-e', 'languageserver::run()' },
   cmd = { 'r-languageserver.cmd' },
   filetypes = { 'r', 'quarto' },
   capabilities = capabilities
@@ -152,24 +117,41 @@ require('lspconfig')['r_language_server'].setup {
 require('lspconfig')['jsonls'].setup {
   autostart = true,
   on_attach = on_attach,
-  -- flags = lsp_flags,
+  flags = lsp_flags,
   cmd = { 'vscode-json-language-server.cmd', '--stdio' },
   filetypes = { 'json', 'jsonc' },
   capabilities = capabilities
 }
-require('lspconfig')['sqlls'].setup {
+require('lspconfig')['powershell_es'].setup {
   autostart = true,
   on_attach = on_attach,
-  -- flags = lsp_flags,
-  cmd = { 'sql-language-server.cmd', 'up', '--method', 'stdio' },
-  filetypes = { 'sql', 'mysql' },
+  flags = lsp_flags,
+  bundle_path = "C:\\Users\\STPI\\AppData\\Local\\nvim-data\\mason\\packages\\powershell-editor-services",
+  shell = "pwsh.exe",
+  filetypes = { 'ps1' },
   capabilities = capabilities
+}
+require('lspconfig')['bashls'].setup {
+  autostart = true,
+  on_attach = on_attach,
+  flags = lsp_flags,
+  cmd = { 'bash-language-server.cmd', 'start' },
+  filetypes = { 'sh' },
+  capabilities = capabilities,
+  settings = {
+    bashIde = {
+      globPattern = "*@(.sh|.inc|.bash|.command)"
+    }
+  },
+  single_file_support = true
 }
 require('lspconfig')['html'].setup {
   autostart = true,
   on_attach = on_attach,
-  -- flags = lsp_flags,
+  flags = lsp_flags,
   cmd = { 'vscode-html-language-server.cmd', '--stdio' },
+  filetypes = { 'html', 'templ' },
+  capabilities = capabilities,
   init_options = {
     configurationSection = { "html", "css", "javascript" },
     embeddedLanguages = {
@@ -178,7 +160,5 @@ require('lspconfig')['html'].setup {
     },
     provideFormatter = true
   },
-  single_file_support = true,
-  filetypes = { 'html', 'templ' },
-  capabilities = capabilities
+  single_file_support = true
 }

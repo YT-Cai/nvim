@@ -1,23 +1,13 @@
 require('obsidian').setup({
-  ui = { enable = false },
-  dir = "C:/Users/ytcai/Documents/Obsidian/",
-  completion = {
-    nvim_cmp = true,
-    min_chars = 2
-  },
   workspaces = {
     {
       name = "STPI",
       path = "C:/Users/ytcai/Documents/Obsidian/STPI",
-      strict = true,
-      -- overrides = {
-      --   notes_subdir = "tmp"
-      -- }
     },
   },
+  notes_subdir = "tmp",
   daily_notes = {
-    -- Optional, if you keep daily notes in a separate directory.
-    folder = "STPI/Daily",
+    folder = "Daily",
     -- Optional, if you want to change the date format for the ID of daily notes.
     date_format = "%Y-%m-%d",
     -- Optional, if you want to change the date format of the default alias of daily notes.
@@ -27,19 +17,6 @@ require('obsidian').setup({
     -- Optional, if you want to automatically insert a template from your template directory like 'daily.md'
     template = nil
   },
-  notes_subdir = "STPI/tmp",
-  mappings = {
-    ["<leader>ch"] = {
-      action = function()
-        return require('obsidian').util.toggle_checkbox()
-      end,
-      opts = { buffer = true }
-    }
-  },
-  picker = {
-    name = "telescope.nvim"
-  },
-  new_notes_location = "notes_subdir",
   -- Optional, customize how note IDs are generated given an optional title.
   ---@param title string|?
   ---@return string
@@ -59,8 +36,31 @@ require('obsidian').setup({
     end
     return tostring(os.time()) .. "-" .. suffix
   end,
-  -- force ':ObsidianOpen' to bring the app to the foreground
-  open_app_foreground = true,
+  completion = {
+    nvim_cmp = true,
+    min_chars = 2
+  },
+  picker = {
+    name = "telescope.nvim"
+  },
+  new_notes_location = "notes_subdir",
+  attachements = {
+    img_folder = "Images",
+    -- Optional, customize the default name or prefix when pasting images via `:ObsidianPasteImg`.
+    ---@return string
+    img_name_func = function()
+      -- Prefix image names with timestamp.
+      return string.format("%s-", os.time())
+    end,
+    -- A function that determines the text to insert in the note when pasting an image.
+    -- It takes two arguments, the `obsidian.Client` and an `obsidian.Path` to the image file.
+    -- This is the default implementation.
+    ---@param client obsidian.Client
+    ---@param path obsidian.Path the absolute path to the image file
+    ---@return string
+    img_text_func = function(client, path)
+      path = client:vault_relative_path(path) or path
+      return string.format("![%s](%s)", path.name, path)
+    end,
+  },
 })
--- set conceallevle
-vim.opt.conceallevel = 2

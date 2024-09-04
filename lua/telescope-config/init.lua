@@ -4,7 +4,6 @@ local function filenameFirst(_, path)
   if parent == "." then return tail end
   return string.format("%s\t\t%s", tail, parent)
 end
-
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "TelescopeResults",
   callback = function(ctx)
@@ -14,21 +13,42 @@ vim.api.nvim_create_autocmd("FileType", {
     end)
   end,
 })
-
+local actions = require('telescope.actions')
+-- local open_with_trouble = require('trouble.sources.telescope').open
+-- Use this to add more results without clearing the trouble list
+-- local add_to_trouble = require("trouble.sources.telescope").add
 require('telescope').setup {
   defaults = {
+    path_display = { 'smart' },
+    layout_strategy = "vertical",
     layout_config = {
-      prompt_position = 'top',
+      prompt_position = 'bottom',
     },
-    layout_strategy = 'vertical',
-    winblend = 10,
-    path_display = { 'smart' }
+    mappings = {
+      i = {
+        -- ["<c-t>"] = open_with_trouble,
+        ["<c-v>"] = 'select_vertical',
+      },
+      -- n = { ["<c-t>"] = open_with_trouble },
+    }
   },
   pickers = {
     git_status = { path_display = filenameFirst, },
     find_files = { path_display = filenameFirst, },
+    -- oldfiles = { path_display = filenameFirst, },
   },
+  extensions = {
+    fzf = {
+      fuzzy = true,                   -- false will only do exact matching
+      override_generic_sorter = true, -- override the generic sorter
+      override_file_sorter = true,    -- override the file sorter
+      case_mode = "smart_case",       -- or "ignore_case" or "respect_case"
+      -- the default case_mode is "smart_case"
+    }
+  }
 }
+-- require('telescope').load_extension('fzf')
+
 local builtin = require('telescope.builtin')
 -- keymaps
 vim.keymap.set('n', '<leader>ff', builtin.find_files, {})

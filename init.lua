@@ -4,14 +4,14 @@ require('settings')
 require('keymaps')
 -- plugins
 require('plugins')
+require('plugins.colorizer-config')
 -- colorscheme
 require('colorscheme')
 require('statusline')
 require('bufferline-config')
-require('colorscheme.color_preview')
 -- indent
--- require('indent-config.indentscope')
-require('indent-config.blankline')
+-- require('indent.indentscope')
+require('indent.blankline')
 -- telescope
 require('telescope-config')
 -- auto completion
@@ -24,6 +24,7 @@ require('lsp-config.quarto-config')
 require('lsp-config.otter-config')
 -- repl
 require('repl.iron-config')
+-- require('repl.jupynium-config')
 -- symbole line
 require('symbol_line.nav')
 require('symbol_line.aerial')
@@ -34,8 +35,6 @@ require('file_explorer')
 -- autocommands
 require('autocommands')
 -- note taking
-require('note-taking.obsidian-config')
--- markdown
-require('note-taking.render-markdown-config')
+require('note_taking.obsidian-config')
 -- terminal
-require('plugins.toggleterm-config')
+require('plugins.terminal-config')

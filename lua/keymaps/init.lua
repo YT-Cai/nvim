@@ -34,7 +34,6 @@ g['sneak#label'] = 1
 Map('n', '<Leader>ll', '<cmd>AerialToggle!<CR>')
 Map('n', '<Leader>n', '<cmd>Navbuddy<CR>')
 -- file explorer
--- Map("n", "-", "<CMD>Oil --float<CR>", { desc = "Open parent directory" })
 Map("n", "-", "<CMD>Oil --float<CR>", { desc = "Open parent directory" })
 
 -- autocmd for file type "R"
@@ -51,7 +50,7 @@ api.nvim_create_autocmd("FileType", {
 })
 
 -- dismiss noice message
--- Map('n', '<Leader>np', '<cmd>NoiceDismiss<CR>', { desc = "Dismiss Noice Message" })
+Map('n', '<Leader>np', '<cmd>NoiceDismiss<CR>', { desc = "Dismiss Noice Message" })
 
 -- undo tree
 Map('n', '<Leader>ud', '<cmd>UndotreeToggle<CR>', { desc = "Toggel Undotree" })
@@ -59,7 +58,6 @@ Map('n', '<Leader>ud', '<cmd>UndotreeToggle<CR>', { desc = "Toggel Undotree" })
 -- minimap
 Map('n', '<Leader>mm', '<cmd>MinimapToggle<CR>', { desc = "Toggle Minimap" })
 
--- copy to clip board
+-- copy to clipboard
 Map('n', '<Leader>y', '"+y')
 Map('v', '<Leader>y', '"+y')
-Map('n', '<Leader>Y', '"+Y')
