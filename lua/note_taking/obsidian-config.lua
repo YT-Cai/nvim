@@ -2,7 +2,7 @@ require('obsidian').setup({
   workspaces = {
     {
       name = "STPI",
-      path = "C:/Users/ytcai/Documents/Obsidian/STPI",
+      path = "C:/Users/DSET/Documents/Obsidian/2ndBrain",
     },
   },
   notes_subdir = "tmp",
@@ -63,4 +63,8 @@ require('obsidian').setup({
       return string.format("![%s](%s)", path.name, path)
     end,
   },
+  -- diable ui for markdown review plugin
+  ui = {
+    disable = true
+  }
 })

@@ -50,15 +50,15 @@ require('lspconfig')['pylsp'].setup {
   filetypes = { 'python' },
   capabilities = capabilities
 }
-require('lspconfig')['tsserver'].setup {
+require('lspconfig')['ts_ls'].setup {
   on_attach = on_attach,
   cmd = { 'typescript-language-server.cmd', '--stdio' },
   filetypes = {
     "javascript", "javascriptreact", "javascript.jsx",
     "typescript", "typescriptreact", "typescript.tsx" },
   capabilities = capabilities,
-  root_dir = nvim_lsp.util.root_pattern("package.json"),
-  single_file_support = false,
+  root_dir = nvim_lsp.util.root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git"),
+  single_file_support = true,
   init_options = { hostInfo = 'neovim' }
 }
 -- require('lspconfig')['denols'].setup {
@@ -109,8 +109,8 @@ require('lspconfig')['r_language_server'].setup {
   autostart = true,
   on_attach = on_attach,
   flags = lsp_flags,
-  -- cmd = { 'Rterm.exe', '--slave', '-e', 'languageserver::run()' },
-  cmd = { 'r-languageserver.cmd' },
+  cmd = { 'Rterm.exe', '--slave', '-e', 'languageserver::run()' },
+  -- cmd = { 'r-languageserver.cmd' },
   filetypes = { 'r', 'quarto' },
   capabilities = capabilities
 }
@@ -126,7 +126,7 @@ require('lspconfig')['powershell_es'].setup {
   autostart = true,
   on_attach = on_attach,
   flags = lsp_flags,
-  bundle_path = "C:\\Users\\STPI\\AppData\\Local\\nvim-data\\mason\\packages\\powershell-editor-services",
+  bundle_path = "C:\\Users\\DSET\\AppData\\Local\\nvim-data\\mason\\packages\\powershell-editor-services",
   shell = "pwsh.exe",
   filetypes = { 'ps1' },
   capabilities = capabilities

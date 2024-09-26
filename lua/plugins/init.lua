@@ -196,7 +196,7 @@ require("lazy").setup({
         objbr_w = 30,
         objbr_place = "script,right",
         rconsole_width = 0,
-        rconsole_height = 20,
+        rconsole_height = 10,
         disable_cmds = {
           -- "RDSendLine",
           "RCustomStart",
@@ -204,7 +204,6 @@ require("lazy").setup({
           "RSaveClose",
         },
         -- active_window_warn = false,
-        R_path = "C:\\Users\\STPI\\scoop\\apps\\r43\\4.3.3\\bin\\x64",
         Rout_more_colors = true,
         csv_app = "terminal:visidata",
       }
@@ -314,7 +313,7 @@ require("lazy").setup({
       max_width = 100,
       floating_window_off_x = 3,
       handler_opts = {
-        border = "rounded"
+        border = "single"
       },
       doc_lines = 0
     },
@@ -357,7 +356,7 @@ require("lazy").setup({
   },
   -- cursor movement
   -- { 'echasnovski/mini.indentscope', version = '*' },
-  { 'echasnovski/mini.nvim', version = '*' },
+  { 'echasnovski/mini.nvim',      version = '*' },
   {
     'gen740/SmoothCursor.nvim',
     config = function()
@@ -376,15 +375,7 @@ require("lazy").setup({
     end,
     opts = {}
   },
-  -- minimap
-  { "wfxr/minimap.vim" },
   -- markdown
-  -- headlines
-  -- {
-  --   "lukas-reineke/headlines.nvim",
-  --   dependencies = "nvim-treesitter/nvim-treesitter",
-  --   config = true, -- or `opts = {}`
-  -- },
   {
     'MeanderingProgrammer/markdown.nvim',
     name = 'render-markdown', -- Only needed if you have another plugin named markdown.nvim
@@ -392,7 +383,9 @@ require("lazy").setup({
     -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
     dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
     config = function()
-      require('render-markdown').setup({})
+      require('render-markdown').setup({
+        file_types = { 'markdown', 'quarto', 'vimwiki', 'vimdoc' }
+      })
     end,
   },
   -- {
@@ -527,6 +520,29 @@ require("lazy").setup({
     "akinsho/toggleterm.nvim",
     version = "*",
     config = true
+  },
+  -- diagnostics
+  {
+    "rachartier/tiny-inline-diagnostic.nvim",
+    event = "VeryLazy", -- Or `LspAttach`
+    config = function()
+      require('tiny-inline-diagnostic').setup()
+    end
+  },
+  -- git
+  {
+    "NeogitOrg/neogit",
+    dependencies = {
+      "nvim-lua/plenary.nvim",  -- required
+      "sindrets/diffview.nvim", -- optional - Diff integration
+
+      -- Only one of these is needed.
+      "nvim-telescope/telescope.nvim", -- optional
+      -- "ibhagwan/fzf-lua",            -- optional
+      -- "echasnovski/mini.pick",       -- optional
+    },
+    config = true
   }
+
 }
 )

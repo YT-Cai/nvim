@@ -61,3 +61,6 @@ Map('n', '<Leader>mm', '<cmd>MinimapToggle<CR>', { desc = "Toggle Minimap" })
 -- copy to clipboard
 Map('n', '<Leader>y', '"+y')
 Map('v', '<Leader>y', '"+y')
+
+-- open ObsidianSearch
+Map('n', '<Leader>obs', '<cmd>ObsidianSearch<CR>', { desc = "Open ObsidianSearch" })
