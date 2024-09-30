@@ -487,12 +487,134 @@ require("lazy").setup({
       })
     end
   },
-  -- lazy.nvim
+  -- ChatGPT
   {
     "robitx/gp.nvim",
     config = function()
       local conf = {
         -- For customization, refer to Install > Configuration in the Documentation/Readme
+        providers = {
+          openai = {
+            disable = false,
+          },
+          -- anthropic = {
+          --   disable = true,
+          --   endpoint = "https://api.anthropic.com/v1/messages",
+          --   session_token = { "cat", "~/AppData/Local/nvim/keys/Anthropic_API_KEY" },
+          -- },
+          ollama = {
+            disable = false,
+            endpoint = "http://localhost:11434/v1/chat/completions",
+            secret = "dummy"
+          },
+        },
+        default_command_agent = nil,
+        default_chat_agent = nil,
+        agents = {
+          -- {
+          --   provider = "ollama",
+          --   name = "Codellama",
+          --   disable = true,
+          --   chat = true,
+          --   command = true,
+          --   -- string with model name or table with model name and parameters
+          --   model = {
+          --     model = "llama3.1",
+          --     temperature = 0.4,
+          --     top_p = 1,
+          --     min_p = 0.05,
+          --   },
+          --   -- system prompt (use this to specify the persona/role of the AI)
+          --   system_prompt = require("gp.defaults").code_system_prompt,
+          -- },
+          {
+            name = "ChatGPT4o",
+            chat = true,
+            command = false,
+            disable = false,
+            -- string with model name or table with model name and parameters
+            model = { model = "gpt-4o", temperature = 1.1, top_p = 1 },
+            -- system prompt (use this to specify the persona/role of the AI)
+            system_prompt = require("gp.defaults").chat_system_prompt,
+          },
+          {
+            provider = "openai",
+            name = "ChatGPT4o-mini",
+            chat = true,
+            command = false,
+            disable = true,
+            -- string with model name or table with model name and parameters
+            model = { model = "gpt-4o-mini", temperature = 1.1, top_p = 1 },
+            -- system prompt (use this to specify the persona/role of the AI)
+            system_prompt = require("gp.defaults").chat_system_prompt,
+          },
+          -- custom config for codellama
+          {
+            provider = "ollama",
+            name = "CodeOllamaLlama3.2",
+            disable = false,
+            chat = false,
+            command = true,
+            -- string with model name or table with model name and parameters
+            model = {
+              model = "llama3.2",
+              temperature = 0.1,
+              top_p = 1,
+              min_p = 0.05,
+            },
+            -- system prompt (use this to specify the persona/role of the AI)
+            system_prompt = require("gp.defaults").code_system_prompt,
+          },
+          {
+            provider = "ollama",
+            name = "ChatOllamaLlama3.2",
+            disable = false,
+            chat = true,
+            command = false,
+            -- string with model name or table with model name and parameters
+            model = {
+              model = "llama3.2",
+              temperature = 0.6,
+              top_p = 1,
+              min_p = 0.05,
+            },
+            -- system prompt (use this to specify the persona/role of the AI)
+            system_prompt = require("gp.defaults").chat_system_prompt,
+          },
+          {
+            provider = "ollama",
+            name = "CodeOllamaLlama3.1-8B",
+            disable = true,
+            chat = false,
+            command = true,
+            -- string with model name or table with model name and parameters
+            model = {
+              -- model = "llama3.2",
+              temperature = 0.4,
+              top_p = 1,
+              min_p = 0.05,
+            },
+            -- system prompt (use this to specify the persona/role of the AI)
+            system_prompt = require("gp.defaults").code_system_prompt,
+          },
+          {
+            provider = "ollama",
+            name = "ChatOllamaLlama3.1-8B",
+            chat = true,
+            command = false,
+            disable = true,
+            -- string with model name or table with model name and parameters
+            model = {
+              -- model = "llama3.2",
+              temperature = 0.6,
+              top_p = 1,
+              min_p = 0.05,
+            },
+            -- system prompt (use this to specify the persona/role of the AI)
+            system_prompt = "You are a general AI assistant.",
+          },
+        },
+        openai_api_key = { "cat", "~/AppData/Local/nvim/keys/OAI_API_KEY" },
       }
       require("gp").setup(conf)
       -- Setup shortcuts here (see Usage > Shortcuts in the Documentation/Readme)

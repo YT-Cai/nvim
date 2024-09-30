@@ -62,5 +62,6 @@ Map('n', '<Leader>mm', '<cmd>MinimapToggle<CR>', { desc = "Toggle Minimap" })
 Map('n', '<Leader>y', '"+y')
 Map('v', '<Leader>y', '"+y')
 
--- open ObsidianSearch
+-- Obsidian
 Map('n', '<Leader>obs', '<cmd>ObsidianSearch<CR>', { desc = "Open ObsidianSearch" })
+Map('n', '<Leader>obo', '<cmd>ObsidianOpen<CR>', { desc = "Open Obsidian GUI" })
